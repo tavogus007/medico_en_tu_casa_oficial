@@ -20,7 +20,7 @@ export class UpdateVehiculoDto {
   @IsOptional()
   @IsString()
   @Length(1, 1)
-  vehiEstado?: string;
+  vehiEstado?: number;
 
   @ApiProperty({
     example: 'Vehículo en mantenimiento',
