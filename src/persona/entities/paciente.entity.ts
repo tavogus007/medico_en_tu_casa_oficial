@@ -4,84 +4,102 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToOne,
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
 import { Persona } from './persona.entity';
-import { Igob } from '../../sistema/entities/igob.entity';
 import { Smartwatch } from '../../smartwatch/entities/smartwatch.entity';
-import { InfoDomicilio } from '../../ruta/entities/infodom.entity';
+import { FormAmd } from '../../formularios/entities/formamd.entity';
+import { Agenda } from '../../agenda/entities/agenda.entity';
 
-@Entity({ name: 'mec_paciente', schema: 'medico_en_tu_casa_v2' })
+@Entity({ name: 'paciente', schema: 'mec' })
 export class Paciente {
-  @PrimaryColumn({ name: 'pers_id' })
-  persId: number;
+  @PrimaryColumn({ name: 'persona_id' })
+  personaId: number;
 
-  @ManyToOne(() => Persona)
-  @JoinColumn({ name: 'pers_id' })
+  @OneToOne(() => Persona)
+  @JoinColumn({ name: 'persona_id' })
   persona: Persona;
 
   @CreateDateColumn({
-    name: 'pac_registrado',
+    name: 'registrado',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  pacRegistrado: Date;
+  pacienteRegistrado: Date;
 
   @UpdateDateColumn({
-    name: 'pac_modificado',
+    name: 'modificado',
     type: 'timestamp',
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  pacienteModificado: Date;
+
+  @Column({
+    name: 'estado',
+    type: 'smallint',
+    default: 1,
+  })
+  pacienteEstado: number;
+
+  @Column({
+    name: 'usuario',
+    type: 'varchar',
+    length: 50,
+    unique: true,
     nullable: true,
   })
-  pacModificado: Date | null;
+  pacienteUsuario: string | null;
 
   @Column({
-    name: 'pac_estado',
-    type: 'char',
-    length: 1,
-    default: 'A',
-  })
-  pacEstado: string;
-
-  @Column({
-    name: 'pac_fecha_nac',
+    name: 'fecha_nac',
     type: 'date',
     nullable: true,
   })
-  pacFechaNac: Date | null;
+  pacienteFechaNac: Date | null;
 
   @Column({
-    name: 'pac_direccion',
-    type: 'text',
+    name: 'direccion',
+    type: 'varchar',
+    length: 200,
     nullable: true,
   })
-  pacDireccion: string | null;
+  pacienteDireccion: string | null;
 
   @Column({
-    name: 'pac_celular',
+    name: 'celular',
     type: 'varchar',
     length: 20,
     nullable: true,
   })
-  pacCelular: string | null;
+  pacienteCelular: string | null;
 
   @Column({
-    name: 'pac_solicitud_amd',
-    type: 'boolean',
-    default: false,
-    nullable: false,
+    name: 'codigo_siis',
+    type: 'varchar',
+    length: 20,
+    nullable: true,
   })
-  pacAtencionDomicilio: boolean;
+  pacienteCodigoSiis: string | null;
 
-  @ManyToOne(() => Igob, { cascade: true })
-  @JoinColumn({ name: 'igob_id' })
-  igob: Igob;
+  @Column({
+    name: 'codigo_sice',
+    type: 'varchar',
+    length: 20,
+    nullable: true,
+  })
+  pacienteCodigoSice: string | null;
 
-  @ManyToOne(() => Smartwatch, { cascade: true })
-  @JoinColumn({ name: 'smart_id' })
-  smartwatch: Smartwatch;
+  @ManyToOne(() => Smartwatch, (smartwatch) => smartwatch.pacientes)
+  @JoinColumn({ name: 'smartwatch_id' })
+  smartwatch: Smartwatch | null;
 
-  @ManyToOne(() => InfoDomicilio, { cascade: true })
-  @JoinColumn({ name: 'info_dom_id' })
-  infoDomicilio: InfoDomicilio;
+  @ManyToOne(() => FormAmd, (formAmd) => formAmd.paciente)
+  @JoinColumn({ name: 'form_amd_id' })
+  formAmd: FormAmd | null;
+
+  @ManyToOne(() => Agenda, (agenda) => agenda.paciente)
+  @JoinColumn({ name: 'agenda_id' })
+  agenda: Agenda | null;
 }

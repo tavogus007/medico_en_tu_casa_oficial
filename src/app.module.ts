@@ -29,7 +29,7 @@ import { Agenda } from './agenda/entities/agenda.entity';
 import { AgendaModule } from './agenda/agenda.module';
 import { Doctor } from './persona/entities/doctor.entity';
 import { TrabajoSocial } from './persona/entities/trabajoSoclal.entity';
-import { Admisiones } from './persona/entities/admisiones.entity';
+import { Admisiones } from './persona/entities/admision.entity';
 
 @Module({
   imports: [

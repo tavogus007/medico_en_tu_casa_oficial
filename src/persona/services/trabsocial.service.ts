@@ -8,73 +8,59 @@ import { CreateTrabajoSocialDto } from '../dtos/create-trabsoc.dto';
 import { UpdateTrabajoSocialDto } from '../dtos/update-trabsoc.dto';
 
 @Injectable()
-export class TrabsocialService {
+export class TrabajoSocialService {
   constructor(
     @InjectRepository(TrabajoSocial)
-    private readonly trabajoSocialRepository: Repository<TrabajoSocial>,
+    private trabajoSocialRepo: Repository<TrabajoSocial>,
     @InjectRepository(Persona)
-    private readonly personaRepository: Repository<Persona>,
+    private personaRepo: Repository<Persona>,
   ) {}
 
   async findAll(): Promise<TrabajoSocial[]> {
-    return await this.trabajoSocialRepository.find({
-      relations: ['persona'],
-    });
+    return this.trabajoSocialRepo.find({ relations: ['persona'] });
   }
 
-  async findOne(persId: number): Promise<TrabajoSocial> {
-    const trabSoc = await this.trabajoSocialRepository.findOne({
-      where: { persId },
+  async findOne(id: number): Promise<TrabajoSocial> {
+    const trabajoSocial = await this.trabajoSocialRepo.findOne({
+      where: { personaId: id },
       relations: ['persona'],
     });
-
-    if (!trabSoc) {
-      throw new NotFoundException(`trabSoc con ID ${persId} no encontrado`);
-    }
-    return trabSoc;
+    if (!trabajoSocial)
+      throw new NotFoundException(`Trabajo Social #${id} no encontrado`);
+    return trabajoSocial;
   }
 
   async create(dto: CreateTrabajoSocialDto): Promise<TrabajoSocial> {
-    // 1. Verificar que la Persona existe
-    const persona = await this.personaRepository.findOne({
-      where: { persId: dto.persId },
+    const persona = await this.personaRepo.findOneBy({
+      persId: dto.personaId,
     });
-    if (!persona) {
-      throw new NotFoundException(`Persona #${dto.persId} no encontrada`);
-    }
+    if (!persona)
+      throw new NotFoundException(`Persona #${dto.personaId} no encontrada`);
 
-    // 2. Buscar las entidades relacionadas (si se proporcionan IDs)
-    // 3. Crear y guardar la Admision (mapeando todos los campos)
-    const trabSoc = this.trabajoSocialRepository.create({
-      persId: dto.persId,
-      tsEstado: dto.tsEstado || 'A',
-      tsUsuario: dto.tsUsuario,
+    const newTrabajoSocial = this.trabajoSocialRepo.create({
+      personaId: dto.personaId,
+      trabajoSocialUsuario: dto.trabajoSocialUsuario,
+      trabajoSocialEstado: 1,
     });
-    return await this.trabajoSocialRepository.save(trabSoc);
+
+    return this.trabajoSocialRepo.save(newTrabajoSocial);
   }
 
   async update(
-    persId: number,
+    id: number,
     dto: UpdateTrabajoSocialDto,
   ): Promise<TrabajoSocial> {
-    const trabSoc = await this.trabajoSocialRepository.findOne({
-      where: { persId },
-    });
+    const trabajoSocial = await this.findOne(id);
 
-    if (!trabSoc) {
-      throw new NotFoundException(`trabSoc con ID ${persId} no encontrado`);
+    if (dto.trabajoSocialUsuario) {
+      trabajoSocial.trabajoSocialUsuario = dto.trabajoSocialUsuario;
     }
 
-    this.trabajoSocialRepository.merge(trabSoc, {
-      tsEstado: dto.tsEstado,
-      tsUsuario: dto.tsUsuario,
-    });
-
-    return this.trabajoSocialRepository.save(trabSoc);
+    return this.trabajoSocialRepo.save(trabajoSocial);
   }
 
-  async delete(persId: number): Promise<void> {
-    const trabSoc = await this.findOne(persId);
-    await this.trabajoSocialRepository.remove(trabSoc);
+  async delete(id: number): Promise<void> {
+    const trabajoSocial = await this.findOne(id);
+    await this.trabajoSocialRepo.remove(trabajoSocial);
   }
 }

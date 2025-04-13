@@ -8,13 +8,14 @@ import {
   Param,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+
 import { PacienteService } from '../services/paciente.service';
 import { Paciente } from '../entities/paciente.entity';
 import { CreatePacienteDto } from '../dtos/create-paciente.dto';
 import { UpdatePacienteDto } from '../dtos/update-paciente.dto';
 
-@ApiTags('Pacientes')
-@Controller('pacientes')
+@ApiTags('Paciente')
+@Controller('paciente')
 export class PacienteController {
   constructor(private readonly pacienteService: PacienteService) {}
 
@@ -29,8 +30,19 @@ export class PacienteController {
     return this.pacienteService.findAll();
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener un paciente por ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Paciente encontrado',
+    type: Paciente,
+  })
+  async findOne(@Param('id') id: number): Promise<Paciente> {
+    return this.pacienteService.findOne(id);
+  }
+
   @Post()
-  @ApiOperation({ summary: 'Registrar un nuevo paciente' })
+  @ApiOperation({ summary: 'Crear un nuevo paciente' })
   @ApiResponse({
     status: 201,
     description: 'Paciente creado',
@@ -40,38 +52,27 @@ export class PacienteController {
     return this.pacienteService.create(dto);
   }
 
-  @Get(':persId')
-  @ApiOperation({ summary: 'Obtener un paciente por ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Paciente encontrado',
-    type: Paciente,
-  })
-  async findOne(@Param('persId') persId: number): Promise<Paciente> {
-    return this.pacienteService.findOne(persId);
-  }
-
-  @Put(':persId')
-  @ApiOperation({ summary: 'Actualizar información de paciente' })
+  @Put(':id')
+  @ApiOperation({ summary: 'Actualizar un paciente' })
   @ApiResponse({
     status: 200,
     description: 'Paciente actualizado',
     type: Paciente,
   })
   async update(
-    @Param('persId') persId: number,
+    @Param('id') id: number,
     @Body() dto: UpdatePacienteDto,
   ): Promise<Paciente> {
-    return this.pacienteService.update(persId, dto);
+    return this.pacienteService.update(id, dto);
   }
 
-  @Delete(':persId')
+  @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un paciente' })
   @ApiResponse({
     status: 204,
     description: 'Paciente eliminado',
   })
-  async delete(@Param('persId') persId: number): Promise<void> {
-    return this.pacienteService.delete(persId);
+  async delete(@Param('id') id: number): Promise<void> {
+    return this.pacienteService.delete(id);
   }
 }

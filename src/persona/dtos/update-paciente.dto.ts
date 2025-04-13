@@ -1,68 +1,33 @@
-// update-paciente.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsDateString,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreatePacienteDto } from './create-paciente.dto';
 
-export class UpdatePacienteDto {
+export class UpdatePacienteDto extends PartialType(CreatePacienteDto) {
   @ApiProperty({
-    example: 'A',
-    description: 'Estado del paciente (A=Activo, I=Inactivo)',
+    example: 'nuevo_usuario',
+    description: 'Nombre de usuario actualizado',
     required: false,
   })
-  @IsOptional()
-  @IsString()
-  @Length(1, 1)
-  pacEstado?: string;
+  pacienteUsuario?: string;
 
   @ApiProperty({
-    example: '1990-01-15',
-    description: 'Fecha de nacimiento (YYYY-MM-DD)',
+    example: '1995-05-15',
+    description: 'Fecha de nacimiento actualizada',
     required: false,
   })
-  @IsOptional()
-  @IsDateString()
-  pacFechaNac?: string;
+  pacienteFechaNac?: Date;
 
   @ApiProperty({
-    example: 'Calle Falsa 123',
-    description: 'Dirección del paciente',
+    example: 'Av. Nueva 456',
+    description: 'Dirección actualizada',
     required: false,
   })
-  @IsOptional()
-  @IsString()
-  pacDireccion?: string;
+  pacienteDireccion?: string;
 
   @ApiProperty({
-    example: '3001234567',
-    description: 'Número de celular',
+    example: '987654321',
+    description: 'Celular actualizado',
     required: false,
   })
-  @IsOptional()
-  @IsString()
-  @Length(1, 20)
-  pacCelular?: string;
-
-  @ApiProperty({
-    example: 1,
-    description: 'ID de referencia para el Smartwatch',
-    required: false,
-  })
-  @IsOptional()
-  smartId?: number;
-
-  @ApiProperty({
-    example: true,
-    description: 'Actualiza el estado de solicitud de atención domiciliaria',
-    required: false,
-  })
-  @IsOptional()
-  @IsBoolean()
-  pacAtencionDomicilio?: boolean;
-
-  // ¡No incluyas persId, igobId, smartId, ni infoDomId!
+  pacienteCelular?: string;
 }

@@ -8,13 +8,14 @@ import {
   Param,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+
 import { DoctorService } from '../services/doctor.service';
 import { Doctor } from '../entities/doctor.entity';
 import { CreateDoctorDto } from '../dtos/create-doctor.dto';
 import { UpdateDoctorDto } from '../dtos/update-doctor.dto';
 
-@ApiTags('Doctores')
-@Controller('doctores')
+@ApiTags('Doctor')
+@Controller('doctor')
 export class DoctorController {
   constructor(private readonly doctorService: DoctorService) {}
 
@@ -29,8 +30,19 @@ export class DoctorController {
     return this.doctorService.findAll();
   }
 
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener un doctor por ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Doctor encontrado',
+    type: Doctor,
+  })
+  async findOne(@Param('id') id: number): Promise<Doctor> {
+    return this.doctorService.findOne(id);
+  }
+
   @Post()
-  @ApiOperation({ summary: 'Registrar un nuevo doctor' })
+  @ApiOperation({ summary: 'Crear un nuevo doctor' })
   @ApiResponse({
     status: 201,
     description: 'Doctor creado',
@@ -40,38 +52,27 @@ export class DoctorController {
     return this.doctorService.create(dto);
   }
 
-  @Get(':persId')
-  @ApiOperation({ summary: 'Obtener un doctor por ID' })
-  @ApiResponse({
-    status: 200,
-    description: 'Doctor encontrado',
-    type: Doctor,
-  })
-  async findOne(@Param('persId') persId: number): Promise<Doctor> {
-    return this.doctorService.findOne(persId);
-  }
-
-  @Put(':persId')
-  @ApiOperation({ summary: 'Actualizar información de doctor' })
+  @Put(':id')
+  @ApiOperation({ summary: 'Actualizar un doctor' })
   @ApiResponse({
     status: 200,
     description: 'Doctor actualizado',
     type: Doctor,
   })
   async update(
-    @Param('persId') persId: number,
+    @Param('id') id: number,
     @Body() dto: UpdateDoctorDto,
   ): Promise<Doctor> {
-    return this.doctorService.update(persId, dto);
+    return this.doctorService.update(id, dto);
   }
 
-  @Delete(':persId')
+  @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un doctor' })
   @ApiResponse({
     status: 204,
     description: 'Doctor eliminado',
   })
-  async delete(@Param('persId') persId: number): Promise<void> {
-    return this.doctorService.delete(persId);
+  async delete(@Param('id') id: number): Promise<void> {
+    return this.doctorService.delete(id);
   }
 }

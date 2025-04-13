@@ -1,12 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-
 import { Repository } from 'typeorm';
+
 import { Paciente } from '../entities/paciente.entity';
 import { Persona } from '../entities/persona.entity';
-import { Igob } from '../../sistema/entities/igob.entity';
 import { Smartwatch } from '../../smartwatch/entities/smartwatch.entity';
-import { InfoDomicilio } from '../../ruta/entities/infodom.entity';
+import { FormAmd } from '../../formularios/entities/formamd.entity';
+import { Agenda } from '../../agenda/entities/agenda.entity';
 import { CreatePacienteDto } from '../dtos/create-paciente.dto';
 import { UpdatePacienteDto } from '../dtos/update-paciente.dto';
 
@@ -14,98 +14,127 @@ import { UpdatePacienteDto } from '../dtos/update-paciente.dto';
 export class PacienteService {
   constructor(
     @InjectRepository(Paciente)
-    private readonly pacienteRepository: Repository<Paciente>,
+    private pacienteRepo: Repository<Paciente>,
     @InjectRepository(Persona)
-    private readonly personaRepository: Repository<Persona>,
-    @InjectRepository(Igob)
-    private readonly igobRepository: Repository<Igob>,
+    private personaRepo: Repository<Persona>,
     @InjectRepository(Smartwatch)
-    private readonly smartwatchRepository: Repository<Smartwatch>,
-    @InjectRepository(InfoDomicilio)
-    private readonly infoDomicilioRepository: Repository<InfoDomicilio>,
+    private smartwatchRepo: Repository<Smartwatch>,
+    @InjectRepository(FormAmd)
+    private formAmdRepo: Repository<FormAmd>,
+    @InjectRepository(Agenda)
+    private agendaRepo: Repository<Agenda>,
   ) {}
 
   async findAll(): Promise<Paciente[]> {
-    return await this.pacienteRepository.find({
-      relations: ['persona', 'igob', 'smartwatch', 'infoDomicilio'],
+    return this.pacienteRepo.find({
+      relations: ['persona', 'smartwatch', 'formAmd', 'agenda'],
     });
   }
 
-  async findOne(persId: number): Promise<Paciente> {
-    const paciente = await this.pacienteRepository.findOne({
-      where: { persId },
-      relations: ['persona', 'igob', 'smartwatch', 'infoDomicilio'],
+  async findOne(id: number): Promise<Paciente> {
+    const paciente = await this.pacienteRepo.findOne({
+      where: { personaId: id },
+      relations: ['persona', 'smartwatch', 'formAmd', 'agenda'],
     });
-    if (!paciente)
-      throw new NotFoundException(`Paciente #${persId} no encontrado`);
+    if (!paciente) throw new NotFoundException(`Paciente #${id} no encontrado`);
     return paciente;
   }
 
   async create(dto: CreatePacienteDto): Promise<Paciente> {
-    // 1. Verificar que la Persona existe
-    const persona = await this.personaRepository.findOne({
-      where: { persId: dto.persId },
+    const persona = await this.personaRepo.findOneBy({
+      persId: dto.personaId,
     });
-    if (!persona) {
-      throw new NotFoundException(`Persona #${dto.persId} no encontrada`);
+    if (!persona)
+      throw new NotFoundException(`Persona #${dto.personaId} no encontrada`);
+
+    const newPaciente = this.pacienteRepo.create({
+      personaId: dto.personaId,
+      pacienteUsuario: dto.pacienteUsuario,
+      pacienteFechaNac: dto.pacienteFechaNac,
+      pacienteDireccion: dto.pacienteDireccion,
+      pacienteCelular: dto.pacienteCelular,
+      pacienteCodigoSiis: dto.pacienteCodigoSiis,
+      pacienteCodigoSice: dto.pacienteCodigoSice,
+      pacienteEstado: 1,
+    });
+
+    if (dto.smartwatchId) {
+      newPaciente.smartwatch = await this.smartwatchRepo.findOneBy({
+        smartId: dto.smartwatchId,
+      });
+      if (!newPaciente.smartwatch)
+        throw new NotFoundException(
+          `Smartwatch #${dto.smartwatchId} no encontrado`,
+        );
     }
 
-    // 2. Buscar las entidades relacionadas (si se proporcionan IDs)
-    const igob = dto.igobId
-      ? await this.igobRepository.findOne({ where: { igobId: dto.igobId } })
-      : null;
-    const smartwatch = dto.smartId
-      ? await this.smartwatchRepository.findOne({
-          where: { smartId: dto.smartId },
-        })
-      : null;
-    const infoDomicilio = dto.infoDomId
-      ? await this.infoDomicilioRepository.findOne({
-          where: { infoDomId: dto.infoDomId },
-        })
-      : null;
+    if (dto.formAmdId) {
+      newPaciente.formAmd = await this.formAmdRepo.findOneBy({
+        formAmdId: dto.formAmdId,
+      });
+      if (!newPaciente.formAmd)
+        throw new NotFoundException(
+          `Formulario AMD #${dto.formAmdId} no encontrado`,
+        );
+    }
 
-    // 3. Crear y guardar el Paciente (mapeando todos los campos)
-    const paciente = this.pacienteRepository.create({
-      persId: dto.persId,
-      pacEstado: dto.pacEstado || 'A', // Valor por defecto
-      pacFechaNac: dto.pacFechaNac,
-      pacDireccion: dto.pacDireccion,
-      pacCelular: dto.pacCelular,
-      pacAtencionDomicilio: dto.pacAtencionDomicilio || false,
-      igob, // Relación con Igob
-      smartwatch, // Relación con Smartwatch
-      infoDomicilio, // Relación con InfoDomicilio
-    });
+    if (dto.agendaId) {
+      newPaciente.agenda = await this.agendaRepo.findOneBy({
+        agendaId: dto.agendaId,
+      });
+      if (!newPaciente.agenda)
+        throw new NotFoundException(`Agenda #${dto.agendaId} no encontrada`);
+    }
 
-    return await this.pacienteRepository.save(paciente);
+    return this.pacienteRepo.save(newPaciente);
   }
 
-  async update(persId: number, dto: UpdatePacienteDto): Promise<Paciente> {
-    const paciente = await this.pacienteRepository.findOne({
-      where: { persId },
-    });
-    if (!paciente)
-      throw new NotFoundException(`Paciente #${persId} no encontrado`);
+  async update(id: number, dto: UpdatePacienteDto): Promise<Paciente> {
+    const paciente = await this.findOne(id);
 
-    this.pacienteRepository.merge(paciente, {
-      pacEstado: dto.pacEstado,
-      pacFechaNac: dto.pacFechaNac,
-      pacDireccion: dto.pacDireccion,
-      pacCelular: dto.pacCelular,
-      pacAtencionDomicilio: dto.pacAtencionDomicilio,
-      smartwatch: dto.smartId
-        ? await this.smartwatchRepository.findOne({
-            where: { smartId: dto.smartId },
-          })
-        : paciente.smartwatch,
-    });
+    if (dto.pacienteUsuario) paciente.pacienteUsuario = dto.pacienteUsuario;
+    if (dto.pacienteFechaNac) paciente.pacienteFechaNac = dto.pacienteFechaNac;
+    if (dto.pacienteDireccion)
+      paciente.pacienteDireccion = dto.pacienteDireccion;
+    if (dto.pacienteCelular) paciente.pacienteCelular = dto.pacienteCelular;
+    if (dto.pacienteCodigoSiis)
+      paciente.pacienteCodigoSiis = dto.pacienteCodigoSiis;
+    if (dto.pacienteCodigoSice)
+      paciente.pacienteCodigoSice = dto.pacienteCodigoSice;
 
-    return await this.pacienteRepository.save(paciente);
+    if (dto.smartwatchId) {
+      paciente.smartwatch = await this.smartwatchRepo.findOneBy({
+        smartId: dto.smartwatchId,
+      });
+      if (!paciente.smartwatch)
+        throw new NotFoundException(
+          `Smartwatch #${dto.smartwatchId} no encontrado`,
+        );
+    }
+
+    if (dto.formAmdId) {
+      paciente.formAmd = await this.formAmdRepo.findOneBy({
+        formAmdId: dto.formAmdId,
+      });
+      if (!paciente.formAmd)
+        throw new NotFoundException(
+          `Formulario AMD #${dto.formAmdId} no encontrado`,
+        );
+    }
+
+    if (dto.agendaId) {
+      paciente.agenda = await this.agendaRepo.findOneBy({
+        agendaId: dto.agendaId,
+      });
+      if (!paciente.agenda)
+        throw new NotFoundException(`Agenda #${dto.agendaId} no encontrada`);
+    }
+
+    return this.pacienteRepo.save(paciente);
   }
 
-  async delete(persId: number): Promise<void> {
-    const paciente = await this.findOne(persId);
-    await this.pacienteRepository.remove(paciente);
+  async delete(id: number): Promise<void> {
+    const paciente = await this.findOne(id);
+    await this.pacienteRepo.remove(paciente);
   }
 }

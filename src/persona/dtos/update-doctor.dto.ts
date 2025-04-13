@@ -1,59 +1,19 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, Length, IsInt } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateDoctorDto } from './create-doctor.dto';
 
-export class UpdateDoctorDto {
+export class UpdateDoctorDto extends PartialType(CreateDoctorDto) {
   @ApiProperty({
-    example: 'A',
-    description: 'Estado del doctor (A=Activo, I=Inactivo)',
+    example: 'Neurología',
+    description: 'Nueva especialidad médica',
     required: false,
   })
-  @IsOptional()
-  @IsString()
-  @Length(1, 1)
-  docEstado?: string;
+  doctorEspecialidad?: string;
 
   @ApiProperty({
-    example: 'Pediatría',
-    description: 'Especialidad del doctor',
+    example: 'dr.perez.actualizado',
+    description: 'Nuevo nombre de usuario',
     required: false,
   })
-  @IsOptional()
-  @IsString()
-  docEspecialidad?: string;
-
-  @ApiProperty({
-    example: '77754321',
-    description: 'Número de celular del doctor',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  docCelular?: string;
-
-  @ApiProperty({
-    example: 'mgarcia2023',
-    description: 'Nombre de usuario del doctor',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  docUsuario?: string;
-
-  @ApiProperty({
-    example: 2,
-    description: 'ID del vehículo asignado',
-    required: false,
-  })
-  @IsOptional()
-  @IsInt()
-  vehiId?: number;
-
-  @ApiProperty({
-    example: 2,
-    description: 'ID del registro en SIIs Web',
-    required: false,
-  })
-  @IsOptional()
-  @IsInt()
-  siisWebId?: number;
+  doctorUsuario?: string;
 }

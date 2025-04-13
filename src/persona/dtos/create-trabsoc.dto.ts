@@ -1,33 +1,22 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsOptional, IsString, Length } from 'class-validator';
+import { IsInt, IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateTrabajoSocialDto {
   @ApiProperty({
     example: 1,
-    description: 'ID de la persona (referencia a mec_persona)',
+    description: 'ID de la persona asociada',
     required: true,
   })
   @IsInt()
-  persId: number;
+  @IsNotEmpty()
+  personaId: number;
 
   @ApiProperty({
-    example: 'A',
-    description: 'Estado de trabajo social (A=Activo, I=Inactivo)',
-    default: 'A',
-    required: false,
+    example: 'tsocial1',
+    description: 'Nombre de usuario único',
+    required: true,
   })
-  @IsOptional()
   @IsString()
-  @Length(1, 1)
-  tsEstado?: string;
-
-  @ApiProperty({
-    example: 'mgarcia',
-    description: 'Nombre de usuario de trabajo social',
-    required: false,
-  })
-  @IsOptional()
-  @IsString()
-  @Length(1, 50)
-  tsUsuario?: string;
+  @IsNotEmpty()
+  trabajoSocialUsuario: string;
 }

@@ -5,71 +5,76 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToOne,
   JoinColumn,
 } from 'typeorm';
 import { Persona } from './persona.entity';
 import { Vehiculo } from '../../vehiculo/entities/vehiculo.entity';
-import { SiisWeb } from '../../sistema/entities/siis.entity';
+import { Agenda } from '../../agenda/entities/agenda.entity';
+import { HospitalMunicipal } from '../../geografico/entities/hospmun.entity';
 
-@Entity({ name: 'mec_doctor', schema: 'medico_en_tu_casa_v2' })
+@Entity({ name: 'doctor', schema: 'mec' })
 export class Doctor {
-  @PrimaryColumn({ name: 'pers_id' })
-  persId: number;
+  @PrimaryColumn({ name: 'persona_id' })
+  personaId: number;
+
+  @OneToOne(() => Persona)
+  @JoinColumn({ name: 'persona_id' })
+  persona: Persona;
 
   @CreateDateColumn({
-    name: 'doc_registrado',
+    name: 'registrado',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  docRegistrado: Date;
+  doctorRegistrado: Date;
 
   @UpdateDateColumn({
-    name: 'doc_modificado',
+    name: 'modificado',
     type: 'timestamp',
-    nullable: true,
+    default: () => 'CURRENT_TIMESTAMP',
   })
-  docModificado: Date | null;
+  doctorModificado: Date;
 
   @Column({
-    name: 'doc_estado',
-    type: 'char',
-    length: 1,
-    default: 'A',
+    name: 'estado',
+    type: 'smallint',
+    default: 1,
   })
-  docEstado: string;
+  doctorEstado: number;
 
   @Column({
-    name: 'doc_especialidad',
+    name: 'especialidad',
+    type: 'varchar',
+    length: 100,
+  })
+  doctorEspecialidad: string;
+
+  @Column({
+    name: 'celular',
     type: 'varchar',
     length: 20,
-  })
-  docEspecialidad: string;
-
-  @Column({
-    name: 'doc_celular',
-    type: 'varchar',
-    length: 20,
     nullable: true,
   })
-  docCelular: string | null;
+  doctorCelular: string | null;
 
   @Column({
-    name: 'doc_usuario',
+    name: 'usuario',
     type: 'varchar',
     length: 50,
     unique: true,
   })
-  docUsuario: string;
+  doctorUsuario: string;
 
-  @ManyToOne(() => Vehiculo)
-  @JoinColumn({ name: 'vehi_id' })
+  @ManyToOne(() => Vehiculo, (vehiculo) => vehiculo.doctores)
+  @JoinColumn({ name: 'vehiculo_id' })
   vehiculo: Vehiculo;
 
-  @ManyToOne(() => SiisWeb)
-  @JoinColumn({ name: 'siis_web_id' })
-  siisWeb: SiisWeb;
+  @ManyToOne(() => Agenda, (agenda) => agenda.doctores)
+  @JoinColumn({ name: 'agenda_id' })
+  agenda: Agenda;
 
-  @ManyToOne(() => Persona)
-  @JoinColumn({ name: 'pers_id' })
-  persona: Persona;
+  @ManyToOne(() => HospitalMunicipal, (hospital) => hospital.doctores)
+  @JoinColumn({ name: 'hospital_id' })
+  hospital: HospitalMunicipal;
 }

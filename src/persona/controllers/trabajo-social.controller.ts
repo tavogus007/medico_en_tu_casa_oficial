@@ -2,76 +2,77 @@ import {
   Controller,
   Get,
   Post,
-  Body,
-  Param,
   Put,
   Delete,
+  Body,
+  Param,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
-import { TrabsocialService } from '../services/trabsocial.service';
+import { TrabajoSocialService } from '../services/trabsocial.service';
+import { TrabajoSocial } from '../entities/trabajoSoclal.entity';
 import { CreateTrabajoSocialDto } from '../dtos/create-trabsoc.dto';
 import { UpdateTrabajoSocialDto } from '../dtos/update-trabsoc.dto';
-import { TrabajoSocial } from '../entities/trabajoSoclal.entity';
 
-@Controller('trabajosocial')
+@ApiTags('Trabajo Social')
+@Controller('trabajo-social')
 export class TrabajoSocialController {
-  constructor(private readonly trabsocService: TrabsocialService) {}
+  constructor(private readonly trabajoSocialService: TrabajoSocialService) {}
 
   @Get()
-  @ApiOperation({ summary: 'Listar todos las entidades trabsoc' })
+  @ApiOperation({ summary: 'Listar todos los trabajos sociales' })
   @ApiResponse({
     status: 200,
-    description: 'Lista de trabsoc',
+    description: 'Lista de trabajos sociales',
     type: [TrabajoSocial],
   })
   async findAll(): Promise<TrabajoSocial[]> {
-    return this.trabsocService.findAll();
+    return this.trabajoSocialService.findAll();
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Obtener un trabajo social por ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Trabajo social encontrado',
+    type: TrabajoSocial,
+  })
+  async findOne(@Param('id') id: number): Promise<TrabajoSocial> {
+    return this.trabajoSocialService.findOne(id);
   }
 
   @Post()
-  @ApiOperation({ summary: 'Registrar una trabsoc' })
+  @ApiOperation({ summary: 'Crear un nuevo trabajo social' })
   @ApiResponse({
     status: 201,
-    description: 'trabsoc creado',
+    description: 'Trabajo social creado',
     type: TrabajoSocial,
   })
   async create(@Body() dto: CreateTrabajoSocialDto): Promise<TrabajoSocial> {
-    return this.trabsocService.create(dto);
+    return this.trabajoSocialService.create(dto);
   }
 
-  @Get(':persId')
-  @ApiOperation({ summary: 'Obtener trabsoc por ID' })
+  @Put(':id')
+  @ApiOperation({ summary: 'Actualizar un trabajo social' })
   @ApiResponse({
     status: 200,
-    description: 'trabsoc encontrado',
-    type: TrabajoSocial,
-  })
-  async findOne(@Param('persId') persId: number): Promise<TrabajoSocial> {
-    return this.trabsocService.findOne(persId);
-  }
-
-  @Put(':persId')
-  @ApiOperation({ summary: 'Actualizar información de trabsoc' })
-  @ApiResponse({
-    status: 200,
-    description: 'Doctor actualizado',
+    description: 'Trabajo social actualizado',
     type: TrabajoSocial,
   })
   async update(
-    @Param('persId') persId: number,
+    @Param('id') id: number,
     @Body() dto: UpdateTrabajoSocialDto,
   ): Promise<TrabajoSocial> {
-    return this.trabsocService.update(persId, dto);
+    return this.trabajoSocialService.update(id, dto);
   }
 
-  @Delete(':persId')
-  @ApiOperation({ summary: 'Eliminar una trabsoc' })
+  @Delete(':id')
+  @ApiOperation({ summary: 'Eliminar un trabajo social' })
   @ApiResponse({
     status: 204,
-    description: 'trabsoc eliminado',
+    description: 'Trabajo social eliminado',
   })
-  async delete(@Param('persId') persId: number): Promise<void> {
-    return this.trabsocService.delete(persId);
+  async delete(@Param('id') id: number): Promise<void> {
+    return this.trabajoSocialService.delete(id);
   }
 }

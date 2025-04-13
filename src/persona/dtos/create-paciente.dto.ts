@@ -1,95 +1,93 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsDateString,
-  IsOptional,
-  IsString,
-  Length,
-  IsInt,
-  IsBoolean,
-} from 'class-validator';
+import { IsInt, IsString, IsDateString, IsOptional } from 'class-validator';
 
 export class CreatePacienteDto {
   @ApiProperty({
     example: 1,
-    description: 'ID de la persona (referencia a mec_persona)',
+    description: 'ID de la persona asociada',
     required: true,
   })
   @IsInt()
-  persId: number;
+  personaId: number;
 
   @ApiProperty({
-    example: 'A',
-    description: 'Estado del paciente (A=Activo, I=Inactivo)',
-    default: 'A',
+    example: 'paciente1',
+    description: 'Nombre de usuario único',
     required: false,
   })
   @IsOptional()
   @IsString()
-  @Length(1, 1)
-  pacEstado?: string;
+  pacienteUsuario?: string;
 
   @ApiProperty({
-    example: '1990-01-15',
-    description: 'Fecha de nacimiento (YYYY-MM-DD)',
+    example: '1990-01-01',
+    description: 'Fecha de nacimiento',
     required: false,
   })
   @IsOptional()
   @IsDateString()
-  pacFechaNac?: string;
+  pacienteFechaNac?: Date;
 
   @ApiProperty({
-    example: 'Calle Falsa 123',
+    example: 'Av. Principal 123',
     description: 'Dirección del paciente',
     required: false,
   })
   @IsOptional()
   @IsString()
-  pacDireccion?: string;
+  pacienteDireccion?: string;
 
   @ApiProperty({
-    example: '3001234567',
+    example: '987654321',
     description: 'Número de celular',
     required: false,
   })
   @IsOptional()
   @IsString()
-  @Length(1, 20)
-  pacCelular?: string;
+  pacienteCelular?: string;
 
   @ApiProperty({
-    example: 1,
-    description: 'ID de referencia a Mec_igob',
-    required: true,
+    example: 'SIIS12345',
+    description: 'Código SIIs',
+    required: false,
   })
   @IsOptional()
-  @IsInt()
-  igobId?: number;
+  @IsString()
+  pacienteCodigoSiis?: string;
+
+  @ApiProperty({
+    example: 'SICE54321',
+    description: 'Código SICE',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  pacienteCodigoSice?: string;
 
   @ApiProperty({
     example: 1,
-    description: 'ID de referencia a Mec_smartwatch',
+    description: 'ID del smartwatch asociado',
     required: false,
   })
   @IsOptional()
   @IsInt()
-  smartId?: number;
+  smartwatchId?: number;
 
   @ApiProperty({
     example: 1,
-    description: 'ID de referencia a Mec_info_domicilio',
+    description: 'ID del formulario AMD asociado',
     required: false,
   })
   @IsOptional()
   @IsInt()
-  infoDomId?: number;
+  formAmdId?: number;
 
   @ApiProperty({
-    example: false,
-    description: 'Indica si el paciente solicitó atención domiciliaria',
+    example: 1,
+    description: 'ID de la agenda asociada',
     required: false,
-    default: false,
   })
   @IsOptional()
-  @IsBoolean()
-  pacAtencionDomicilio?: boolean;
+  @IsInt()
+  agendaId?: number;
 }

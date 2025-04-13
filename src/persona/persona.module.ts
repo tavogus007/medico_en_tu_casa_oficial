@@ -14,11 +14,11 @@ import { Doctor } from './entities/doctor.entity';
 import { DoctorService } from './services/doctor.service';
 import { DoctorController } from './controllers/doctor.controller';
 import { VehiculoModule } from 'src/vehiculo/vehiculo.module';
-import { AdmisionesService } from './services/admisiones.service';
+import { AdmisionesService } from './services/admision.service';
 import { TrabsocialService } from './services/trabsocial.service';
 import { TrabajoSocialController } from './controllers/trabajo-social.controller';
-import { AdmisionesController } from './controllers/admisiones.controller';
-import { Admisiones } from './entities/admisiones.entity';
+import { AdmisionesController } from './controllers/admision.controller';
+import { Admisiones } from './entities/admision.entity';
 import { TrabajoSocial } from './entities/trabajoSoclal.entity';
 
 @Module({

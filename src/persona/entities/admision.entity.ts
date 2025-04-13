@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 import { Persona } from './persona.entity';
 
-@Entity({ name: 'trabajo_social', schema: 'mec' })
-export class TrabajoSocial {
+@Entity({ name: 'admision', schema: 'mec' })
+export class Admision {
   @PrimaryColumn({ name: 'persona_id' })
   personaId: number;
 
@@ -23,21 +23,21 @@ export class TrabajoSocial {
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  trabajoSocialRegistrado: Date;
+  admisionRegistrado: Date;
 
   @UpdateDateColumn({
     name: 'modificado',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
   })
-  trabajoSocialModificado: Date;
+  admisionModificado: Date;
 
   @Column({
     name: 'estado',
     type: 'smallint',
     default: 1,
   })
-  trabajoSocialEstado: number;
+  admisionEstado: number;
 
   @Column({
     name: 'usuario',
@@ -45,5 +45,5 @@ export class TrabajoSocial {
     length: 50,
     unique: true,
   })
-  trabajoSocialUsuario: string;
+  admisionUsuario: string;
 }
