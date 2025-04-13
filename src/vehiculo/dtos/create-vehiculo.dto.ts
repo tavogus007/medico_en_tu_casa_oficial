@@ -27,7 +27,7 @@ export class CreateVehiculoDto {
   @IsOptional()
   @IsString()
   @Length(1, 1)
-  vehiEstado?: string;
+  vehiEstado?: number;
 
   @ApiProperty({
     example: 'Vehículo en buen estado, con detalles menores en la pintura',

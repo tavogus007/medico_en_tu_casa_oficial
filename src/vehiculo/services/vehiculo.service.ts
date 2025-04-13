@@ -15,7 +15,7 @@ export class VehiculoService {
   async create(dto: CreateVehiculoDto): Promise<Vehiculo> {
     const newVehiculo = this.vehiculoRepository.create({
       vehiPlaca: dto.vehiPlaca,
-      vehiEstado: dto.vehiEstado || 'A',
+      vehiEstado: dto.vehiEstado || 1,
       vehiDescripcionEstado: dto.vehiDescripcionEstado,
       vehiKilometraje: dto.vehiKilometraje,
     });
