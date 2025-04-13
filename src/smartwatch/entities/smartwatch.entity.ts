@@ -1,11 +1,11 @@
-//import { Paciente } from '';
+import { Paciente } from '../../persona/entities/paciente.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  //OneToMany,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'smartwatch', schema: 'mec' })
@@ -110,6 +110,6 @@ export class Smartwatch {
   })
   smartActividadFisica: string | null;
 
-  // @OneToMany(() => Paciente, (paciente) => paciente.smartwatch)
-  // pacientes: Paciente[];
+  @OneToMany(() => Paciente, (paciente) => paciente.smartwatch)
+  pacientes: Paciente[];
 }

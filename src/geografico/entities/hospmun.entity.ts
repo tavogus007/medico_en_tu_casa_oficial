@@ -8,7 +8,9 @@ import {
   UpdateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
+import { Doctor } from 'src/persona/entities/doctor.entity';
 
 @Entity({ name: 'hospital_municipal', schema: 'mec' })
 export class HospitalMunicipal {
@@ -84,4 +86,7 @@ export class HospitalMunicipal {
   @JoinColumn({ name: 'zona_id' })
   @ApiProperty({ type: () => Zona })
   zona: Zona;
+
+  @OneToMany(() => Doctor, (doctor) => doctor.hospital)
+  doctores?: Doctor[];
 }

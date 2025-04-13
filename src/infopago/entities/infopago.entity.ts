@@ -1,9 +1,11 @@
+import { FormAmd } from 'src/formularios/entities/formamd.entity';
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'informacion_pago', schema: 'mec' })
@@ -47,4 +49,7 @@ export class InformacionPago {
     nullable: true,
   })
   infoPagoDescripcion: string | null;
+
+  @OneToMany(() => FormAmd, (formAmd) => formAmd.formAmdInfoPago)
+  formsAmd: FormAmd[];
 }

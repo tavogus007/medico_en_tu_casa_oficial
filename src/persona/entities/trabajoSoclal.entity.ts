@@ -6,8 +6,10 @@ import {
   UpdateDateColumn,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Persona } from './persona.entity';
+import { Agenda } from 'src/agenda/entities/agenda.entity';
 
 @Entity({ name: 'trabajo_social', schema: 'mec' })
 export class TrabajoSocial {
@@ -46,4 +48,7 @@ export class TrabajoSocial {
     unique: true,
   })
   trabajoSocialUsuario: string;
+
+  @OneToMany(() => Agenda, (agenda) => agenda.trabajoSocial)
+  agendas: Agenda[];
 }

@@ -5,11 +5,16 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
+  OneToOne,
 } from 'typeorm';
+import { Doctor } from './doctor.entity';
+import { Admision } from './admision.entity';
+import { TrabajoSocial } from './trabajoSoclal.entity';
 
 @Entity({ name: 'persona', schema: 'mec' })
 export class Persona {
   @PrimaryGeneratedColumn({ name: 'persona_id' })
+  @ApiProperty({ description: 'ID único de la persona' })
   persId: number;
 
   @CreateDateColumn({
@@ -48,7 +53,16 @@ export class Persona {
   @Column('varchar', { name: 'nombre', length: 50 })
   persNombre: string;
 
-  @ApiProperty({ description: 'Genero' })
+  @ApiProperty({ description: 'Género' })
   @Column('varchar', { name: 'genero', length: 1 })
   persSexo: string;
+
+  @OneToOne(() => Doctor, (doctor) => doctor.persona)
+  doctor: Doctor;
+
+  @OneToOne(() => Admision, (admision) => admision.persona)
+  admision: Admision;
+
+  @OneToOne(() => TrabajoSocial, (trabajoSocial) => trabajoSocial.persona)
+  trabajoSocial: TrabajoSocial;
 }

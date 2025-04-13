@@ -7,18 +7,21 @@ import {
   ManyToOne,
   OneToOne,
   JoinColumn,
+  OneToMany,
 } from 'typeorm';
 import { Persona } from './persona.entity';
 import { Vehiculo } from '../../vehiculo/entities/vehiculo.entity';
 import { Agenda } from '../../agenda/entities/agenda.entity';
 import { HospitalMunicipal } from '../../geografico/entities/hospmun.entity';
+import { Ruta } from '../../ruta/entities/ruta.entity';
+import { FormDiagnostico } from '../../formularios/entities/formdiag.entity';
 
 @Entity({ name: 'doctor', schema: 'mec' })
 export class Doctor {
   @PrimaryColumn({ name: 'persona_id' })
   personaId: number;
 
-  @OneToOne(() => Persona)
+  @OneToOne(() => Persona, { cascade: true })
   @JoinColumn({ name: 'persona_id' })
   persona: Persona;
 
@@ -77,4 +80,10 @@ export class Doctor {
   @ManyToOne(() => HospitalMunicipal, (hospital) => hospital.doctores)
   @JoinColumn({ name: 'hospital_id' })
   hospital: HospitalMunicipal;
+
+  @OneToMany(() => Ruta, (ruta) => ruta.doctor)
+  rutas: Ruta[];
+
+  @OneToMany(() => FormDiagnostico, (formDiagnostico) => formDiagnostico.doctor)
+  formDiagnosticos: FormDiagnostico[];
 }

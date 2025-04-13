@@ -5,11 +5,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
+  JoinColumn,
 } from 'typeorm';
-import { Doctor } from './doctor.entity';
-import { TrabajoSocial } from './trabajo-social.entity';
-import { Admision } from './admision.entity';
-import { Paciente } from './paciente.entity';
+import { Doctor } from '../../persona/entities/doctor.entity';
+import { TrabajoSocial } from '../../persona/entities/trabajoSoclal.entity';
+import { Admision } from '../../persona/entities/admision.entity';
+import { Paciente } from '../../persona/entities/paciente.entity';
 
 @Entity({ name: 'agenda', schema: 'mec' })
 export class Agenda {
@@ -38,15 +40,17 @@ export class Agenda {
   agendaEstado: number;
 
   // Relaciones con subtipos
-  @ManyToOne(() => Doctor, (doctor) => doctor.agendas)
-  doctor: Doctor;
+  @OneToMany(() => Doctor, (doctor) => doctor.agenda)
+  doctores: Doctor;
 
   @ManyToOne(() => TrabajoSocial, (trabajoSocial) => trabajoSocial.agendas)
-  trabajoSocial: TrabajoSocial;
+  @JoinColumn({ name: 'persona_id' })
+  trabajoSocial: TrabajoSocial | null;
 
   @ManyToOne(() => Admision, (admision) => admision.agendas)
-  admision: Admision;
+  @JoinColumn({ name: 'persona_id' })
+  admision: Admision | null;
 
-  @ManyToOne(() => Paciente, (paciente) => paciente.agendas)
+  @OneToMany(() => Paciente, (paciente) => paciente.agenda)
   paciente: Paciente;
 }

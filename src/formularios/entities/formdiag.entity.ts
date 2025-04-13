@@ -5,8 +5,9 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm';
-import { Persona } from '../../persona/entities/persona.entity';
+import { Doctor } from 'src/persona/entities/doctor.entity';
 
 @Entity({ name: 'form_diagnostico', schema: 'mec' })
 export class FormDiagnostico {
@@ -116,7 +117,7 @@ export class FormDiagnostico {
   })
   formDiagnosticoNotasAdicionales: string | null;
 
-  @ManyToOne(() => Persona, (persona) => persona.persId)
-  @Column({ name: 'persona_id' })
-  formDiagnosticoPersonaId: number;
+  @ManyToOne(() => Doctor, (doctor) => doctor.formDiagnosticos)
+  @JoinColumn({ name: 'doctor_id' })
+  doctor: Doctor;
 }

@@ -1,3 +1,4 @@
+import { Paciente } from 'src/persona/entities/paciente.entity';
 import { InformacionPago } from '../../infopago/entities/infopago.entity';
 import {
   Entity,
@@ -6,6 +7,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity({ name: 'form_amd', schema: 'mec' })
@@ -99,8 +102,11 @@ export class FormAmd {
 
   @ManyToOne(
     () => InformacionPago,
-    (informacionPago) => informacionPago.infoPagoId,
+    (formAmdInfoPago) => formAmdInfoPago.formsAmd,
   )
-  @Column({ name: 'info_pago_id', nullable: true })
-  formAmdInfoPagoId: number | null;
+  @JoinColumn({ name: 'info_pago_id' })
+  formAmdInfoPago: FormAmd;
+
+  @OneToMany(() => Paciente, (paciente) => paciente.formAmd)
+  pacientes: Paciente[];
 }

@@ -95,7 +95,7 @@ export class Paciente {
   @JoinColumn({ name: 'smartwatch_id' })
   smartwatch: Smartwatch | null;
 
-  @ManyToOne(() => FormAmd, (formAmd) => formAmd.paciente)
+  @ManyToOne(() => FormAmd, (formAmd) => formAmd.pacientes)
   @JoinColumn({ name: 'form_amd_id' })
   formAmd: FormAmd | null;
 
