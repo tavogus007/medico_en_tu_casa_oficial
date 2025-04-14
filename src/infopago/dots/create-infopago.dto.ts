@@ -3,9 +3,9 @@ import { IsOptional, IsString, IsNumber } from 'class-validator';
 
 export class CreateInformacionPagoDto {
   @ApiProperty({
-    example: 'A',
-    description: 'Estado del pago (A=Activo, I=Inactivo)',
-    default: 'A',
+    example: 1,
+    description: 'Estado del pago (1=Activo, -1=Inactivo)',
+    default: 1,
     required: false,
   })
   @IsOptional()

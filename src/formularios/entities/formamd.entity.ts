@@ -100,12 +100,9 @@ export class FormAmd {
   })
   formAmdMetodoPago: string | null;
 
-  @ManyToOne(
-    () => InformacionPago,
-    (formAmdInfoPago) => formAmdInfoPago.formsAmd,
-  )
+  @ManyToOne(() => InformacionPago, (infoPago) => infoPago.formsAmd)
   @JoinColumn({ name: 'info_pago_id' })
-  formAmdInfoPago: FormAmd;
+  infoPago: InformacionPago;
 
   @OneToMany(() => Paciente, (paciente) => paciente.formAmd)
   pacientes: Paciente[];

@@ -12,7 +12,7 @@ export class UpdateDistritoDto extends PartialType(CreateDistritoDto) {
   })
   @IsOptional()
   @IsString()
-  @Length(1, 10)
+  @Length(1, 15)
   distNro?: string;
 
   @ApiProperty({

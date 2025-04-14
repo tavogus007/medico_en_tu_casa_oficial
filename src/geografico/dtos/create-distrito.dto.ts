@@ -15,7 +15,7 @@ export class CreateDistritoDto {
   })
   @IsString()
   @IsNotEmpty()
-  @Length(1, 10)
+  @Length(1, 15)
   distNro: string;
 
   @ApiProperty({

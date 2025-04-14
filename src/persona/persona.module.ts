@@ -7,19 +7,20 @@ import { Persona } from './entities/persona.entity';
 import { Paciente } from './entities/paciente.entity';
 import { PacienteService } from './services/paciente.service';
 import { PacienteController } from './controllers/paciente.controller';
-import { SistemaModule } from '../sistema/sistema.module';
-import { SmartwatchModule } from 'src/smartwatch/smartwatch.module';
-import { RutaModule } from 'src/ruta/ruta.module';
 import { Doctor } from './entities/doctor.entity';
 import { DoctorService } from './services/doctor.service';
 import { DoctorController } from './controllers/doctor.controller';
-import { VehiculoModule } from 'src/vehiculo/vehiculo.module';
-import { AdmisionesService } from './services/admision.service';
-import { TrabsocialService } from './services/trabsocial.service';
+import { AdmisionService } from './services/admision.service';
+import { TrabajoSocialService } from './services/trabsocial.service';
 import { TrabajoSocialController } from './controllers/trabajo-social.controller';
-import { AdmisionesController } from './controllers/admision.controller';
-import { Admisiones } from './entities/admision.entity';
+import { AdmisionController } from './controllers/admision.controller';
+import { Admision } from './entities/admision.entity';
 import { TrabajoSocial } from './entities/trabajoSoclal.entity';
+import { SmartwatchModule } from 'src/smartwatch/smartwatch.module';
+import { FormularioModule } from 'src/formularios/formulario.module';
+import { Agenda } from 'src/agenda/entities/agenda.entity';
+import { VehiculoModule } from 'src/vehiculo/vehiculo.module';
+import { GeograficoModule } from 'src/geografico/geografico.module';
 
 @Module({
   imports: [
@@ -27,28 +28,29 @@ import { TrabajoSocial } from './entities/trabajoSoclal.entity';
       Persona,
       Paciente,
       Doctor,
-      Admisiones,
+      Admision,
       TrabajoSocial,
+      Agenda,
     ]),
-    SistemaModule,
     SmartwatchModule,
-    RutaModule,
+    FormularioModule,
     VehiculoModule,
+    GeograficoModule,
   ],
   providers: [
     PersonaService,
     PacienteService,
     DoctorService,
-    TrabsocialService,
-    AdmisionesService,
+    TrabajoSocialService,
+    AdmisionService,
   ],
   controllers: [
     PersonaController,
     PacienteController,
     DoctorController,
     TrabajoSocialController,
-    AdmisionesController,
+    AdmisionController,
   ],
-  exports: [TypeOrmModule, PersonaService],
+  exports: [TypeOrmModule],
 })
 export class PersonaModule {}

@@ -19,9 +19,9 @@ export class CreateVehiculoDto {
   vehiPlaca: string;
 
   @ApiProperty({
-    example: 'A',
-    description: 'Estado del vehículo (A=Activo, I=Inactivo)',
-    default: 'A',
+    example: 1,
+    description: 'Estado del vehículo (1=Activo, -1=Inactivo)',
+    default: 1,
     required: false,
   })
   @IsOptional()

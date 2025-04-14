@@ -50,6 +50,6 @@ export class InformacionPago {
   })
   infoPagoDescripcion: string | null;
 
-  @OneToMany(() => FormAmd, (formAmd) => formAmd.formAmdInfoPago)
+  @OneToMany(() => FormAmd, (formAmd) => formAmd.infoPago)
   formsAmd: FormAmd[];
 }

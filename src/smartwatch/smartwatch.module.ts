@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { Smartwatch } from './entities/smartwatch.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
+import { Smartwatch } from './entities/smartwatch.entity';
 import { SmartwatchService } from './services/smartwatch.service';
 import { SmartwatchController } from './controllers/smartwatch.controller';
 

@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsString, IsNumber, IsOptional } from 'class-validator';
+import { IsInt, IsString, IsNumber, IsOptional, IsIn } from 'class-validator';
 
 export class CreateFormDiagnosticoDto {
   @ApiProperty({
@@ -9,6 +9,16 @@ export class CreateFormDiagnosticoDto {
   })
   @IsInt()
   personaId: number;
+
+  @ApiProperty({
+    description: 'Estado (1 = activo, -1 = inactivo)',
+    example: 1,
+    required: false,
+    default: 1,
+  })
+  @IsOptional()
+  @IsIn([1, -1], { message: 'El estado debe ser 1 (Activo) o -1 (Inactivo)' })
+  estado?: number;
 
   @ApiProperty({
     example: 80,

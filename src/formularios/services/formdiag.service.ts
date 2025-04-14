@@ -3,27 +3,27 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { FormDiagnostico } from '../entities/formdiag.entity';
-import { Persona } from '../../persona/entities/persona.entity';
 import { CreateFormDiagnosticoDto } from '../dtos/create-formdiag.dto';
 import { UpdateFormDiagnosticoDto } from '../dtos/update-formdiag.dto';
+import { Doctor } from 'src/persona/entities/doctor.entity';
 
 @Injectable()
 export class FormDiagnosticoService {
   constructor(
     @InjectRepository(FormDiagnostico)
     private formDiagnosticoRepo: Repository<FormDiagnostico>,
-    @InjectRepository(Persona)
-    private personaRepo: Repository<Persona>,
+    @InjectRepository(Doctor)
+    private doctorRepo: Repository<Doctor>,
   ) {}
 
   async findAll(): Promise<FormDiagnostico[]> {
-    return this.formDiagnosticoRepo.find({ relations: ['persona'] });
+    return this.formDiagnosticoRepo.find({ relations: ['doctor'] });
   }
 
   async findOne(id: number): Promise<FormDiagnostico> {
     const form = await this.formDiagnosticoRepo.findOne({
       where: { formDiagnosticoId: id },
-      relations: ['persona'],
+      relations: ['doctor'],
     });
     if (!form)
       throw new NotFoundException(
@@ -33,11 +33,13 @@ export class FormDiagnosticoService {
   }
 
   async create(dto: CreateFormDiagnosticoDto): Promise<FormDiagnostico> {
-    const persona = await this.personaRepo.findOneBy({
-      persId: dto.personaId,
+    const doctor = await this.doctorRepo.findOne({
+      where: { personaId: dto.personaId }, // Cambiado de personaId a doctorId para mayor claridad
+      // personaId: dto.personaId, // Cambiado de personaId a doctorId para mayor claridad
     });
-    if (!persona)
-      throw new NotFoundException(`Persona #${dto.personaId} no encontrada`);
+    if (!doctor) {
+      throw new NotFoundException(`Doctor #${dto.personaId} no encontrado`);
+    }
 
     const newForm = this.formDiagnosticoRepo.create({
       formDiagnosticoFrecCardiaca: dto.frecCardiaca,
@@ -51,8 +53,8 @@ export class FormDiagnosticoService {
       formDiagnosticoCantidadMedicamento: dto.cantidadMedicamento,
       formDiagnosticoPosologia: dto.posologia,
       formDiagnosticoNotasAdicionales: dto.notasAdicionales,
-      formDiagnosticoEstado: 1,
-      formDiagnosticoPersonaId: dto.personaId,
+      formDiagnosticoEstado: dto.estado || 1,
+      doctor,
     });
 
     return this.formDiagnosticoRepo.save(newForm);
@@ -84,12 +86,12 @@ export class FormDiagnosticoService {
       form.formDiagnosticoNotasAdicionales = dto.notasAdicionales;
 
     if (dto.personaId) {
-      const persona = await this.personaRepo.findOneBy({
-        persId: dto.personaId,
+      const persona = await this.doctorRepo.findOne({
+        where: { personaId: dto.personaId },
       });
       if (!persona)
         throw new NotFoundException(`Persona #${dto.personaId} no encontrada`);
-      form.formDiagnosticoPersonaId = dto.personaId;
+      form.formDiagnosticoId = dto.personaId;
     }
 
     return this.formDiagnosticoRepo.save(form);

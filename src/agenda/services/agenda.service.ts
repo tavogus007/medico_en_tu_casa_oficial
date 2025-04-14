@@ -4,10 +4,10 @@ import { Repository } from 'typeorm';
 
 import { Agenda } from '../entities/agenda.entity';
 import { UpdateAgendaDto } from '../dtos/update-agenda.dto';
-import { Doctor } from '../entities/doctor.entity';
-import { TrabajoSocial } from '../entities/trabajo-social.entity';
-import { Admision } from '../entities/admision.entity';
-import { Paciente } from '../entities/paciente.entity';
+import { Doctor } from '../../persona/entities/doctor.entity';
+import { TrabajoSocial } from '../../persona/entities/trabajoSoclal.entity';
+import { Admision } from '../../persona/entities/admision.entity';
+import { Paciente } from '../../persona/entities/paciente.entity';
 import { CreateAgendaDto } from '../dtos/create-agenda.dto';
 
 @Injectable()
@@ -27,14 +27,14 @@ export class AgendaService {
 
   async findAll(): Promise<Agenda[]> {
     return this.agendaRepo.find({
-      relations: ['doctor', 'trabajoSocial', 'admision', 'paciente'],
+      relations: ['doctores', 'trabajoSocial', 'admision', 'paciente'],
     });
   }
 
   async findOne(id: number): Promise<Agenda> {
     const agenda = await this.agendaRepo.findOne({
       where: { agendaId: id },
-      relations: ['doctor', 'trabajoSocial', 'admision', 'paciente'],
+      relations: ['doctores', 'trabajoSocial', 'admision', 'paciente'],
     });
     if (!agenda) throw new NotFoundException(`Agenda #${id} no encontrada`);
     return agenda;
@@ -46,16 +46,16 @@ export class AgendaService {
     });
 
     if (dto.doctorId) {
-      nuevaAgenda.doctor = await this.doctorRepo.findOneBy({
-        doctorId: dto.doctorId,
+      nuevaAgenda.doctores = await this.doctorRepo.findOneBy({
+        personaId: dto.doctorId,
       });
-      if (!nuevaAgenda.doctor)
+      if (!nuevaAgenda.doctores)
         throw new NotFoundException(`Doctor #${dto.doctorId} no encontrado`);
     }
 
     if (dto.trabajoSocialId) {
       nuevaAgenda.trabajoSocial = await this.trabajoSocialRepo.findOneBy({
-        trabajoSocialId: dto.trabajoSocialId,
+        personaId: dto.trabajoSocialId,
       });
       if (!nuevaAgenda.trabajoSocial)
         throw new NotFoundException(
@@ -65,7 +65,7 @@ export class AgendaService {
 
     if (dto.admisionId) {
       nuevaAgenda.admision = await this.admisionRepo.findOneBy({
-        admisionId: dto.admisionId,
+        personaId: dto.admisionId,
       });
       if (!nuevaAgenda.admision)
         throw new NotFoundException(
@@ -75,7 +75,7 @@ export class AgendaService {
 
     if (dto.pacienteId) {
       nuevaAgenda.paciente = await this.pacienteRepo.findOneBy({
-        pacienteId: dto.pacienteId,
+        personaId: dto.pacienteId,
       });
       if (!nuevaAgenda.paciente)
         throw new NotFoundException(
