@@ -32,14 +32,18 @@ export class FormAmdService {
   }
 
   async create(dto: CreateFormAmdDto): Promise<FormAmd> {
-    const infoPago = await this.infoPagoRepo.findOne({
-      where: { infoPagoId: dto.formAmdInfoPagoId },
-    });
+    let infoPago: InformacionPago = null;
 
-    if (!infoPago) {
-      throw new NotFoundException(
-        `Información de pago #${dto.formAmdInfoPagoId} no encontrada`,
-      );
+    if (dto.formAmdInfoPagoId !== undefined && dto.formAmdInfoPagoId !== null) {
+      infoPago = await this.infoPagoRepo.findOne({
+        where: { infoPagoId: dto.formAmdInfoPagoId },
+      });
+
+      if (!infoPago) {
+        throw new NotFoundException(
+          `Información de pago #${dto.formAmdInfoPagoId} no encontrada`,
+        );
+      }
     }
 
     const newForm = this.formAmdRepo.create({
@@ -52,7 +56,7 @@ export class FormAmdService {
       formAmdRefAdicional: dto.formAmdRefAdicional,
       formAmdImporte: dto.formAmdImporte,
       formAmdMetodoPago: dto.formAmdMetodoPago,
-      infoPago,
+      infoPago, // puede ser null
     });
 
     return this.formAmdRepo.save(newForm);

@@ -118,6 +118,6 @@ export class FormDiagnostico {
   formDiagnosticoNotasAdicionales: string | null;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.formDiagnosticos)
-  @JoinColumn({ name: 'doctor_id' })
+  @JoinColumn({ name: 'persona_id' })
   doctor: Doctor;
 }

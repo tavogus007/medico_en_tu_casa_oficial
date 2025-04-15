@@ -11,6 +11,7 @@ import { PersonaModule } from './persona/persona.module';
 import { RutaModule } from './ruta/ruta.module';
 import { SmartwatchModule } from './smartwatch/smartwatch.module';
 import { VehiculoModule } from './vehiculo/vehiculo.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { VehiculoModule } from './vehiculo/vehiculo.module';
     RutaModule,
     SmartwatchModule,
     VehiculoModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],
