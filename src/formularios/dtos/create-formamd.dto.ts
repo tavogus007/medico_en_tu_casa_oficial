@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsNumber, IsInt } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsInt,
+  IsEmail,
+} from 'class-validator';
 
 export class CreateFormAmdDto {
   @ApiProperty({
@@ -90,4 +96,31 @@ export class CreateFormAmdDto {
   @IsOptional()
   @IsInt()
   formAmdInfoPagoId?: number;
+
+  @ApiProperty({
+    example: 'Tipo A',
+    description: 'Tipo de ciudadano',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  formAmdTipoCiudadano?: string;
+
+  @ApiProperty({
+    example: 'ID1234567890',
+    description: 'ID único del ciudadano',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  formAmdIdCiudadano?: string;
+
+  @ApiProperty({
+    example: 'usuario@example.com',
+    description: 'Correo electrónico del ciudadano',
+    required: false,
+  })
+  @IsOptional()
+  @IsEmail()
+  formAmdEmail?: string;
 }

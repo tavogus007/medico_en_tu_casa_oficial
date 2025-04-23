@@ -57,6 +57,9 @@ export class FormAmdService {
       formAmdImporte: dto.formAmdImporte,
       formAmdMetodoPago: dto.formAmdMetodoPago,
       infoPago, // puede ser null
+      formAmdTipoCiudadano: dto.formAmdTipoCiudadano,
+      formAmdIdCiudadano: dto.formAmdIdCiudadano,
+      formAmdEmail: dto.formAmdEmail,
     });
 
     return this.formAmdRepo.save(newForm);

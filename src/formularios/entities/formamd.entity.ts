@@ -100,6 +100,30 @@ export class FormAmd {
   })
   formAmdMetodoPago: string | null;
 
+  @Column({
+    name: 'tipo_ciudadano', // Nota: Hay un typo en el nombre de columna (debería ser 'tipo_ciudadano')
+    type: 'varchar',
+    length: 15,
+    nullable: true,
+  })
+  formAmdTipoCiudadano: string | null;
+
+  @Column({
+    name: 'id_ciudadano',
+    type: 'varchar',
+    length: 40,
+    nullable: true,
+  })
+  formAmdIdCiudadano: string | null;
+
+  @Column({
+    name: 'email',
+    type: 'varchar',
+    length: 255,
+    nullable: true,
+  })
+  formAmdEmail: string | null;
+
   @ManyToOne(() => InformacionPago, (infoPago) => infoPago.formsAmd)
   @JoinColumn({ name: 'info_pago_id' })
   infoPago?: InformacionPago | null;
