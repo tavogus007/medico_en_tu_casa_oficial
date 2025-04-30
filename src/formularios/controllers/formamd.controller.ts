@@ -30,6 +30,14 @@ export class FormAmdController {
     return this.formAmdService.findAll();
   }
 
+  @Get('ciudadano/:id/existe')
+  @ApiOperation({ summary: 'Verificar si ciudadano tiene ficha existente' })
+  async checkFichaExistente(
+    @Param('id') idCiudadano: string,
+  ): Promise<boolean> {
+    return this.formAmdService.hasFicha(idCiudadano);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Crear un nuevo formulario AMD' })
   @ApiResponse({

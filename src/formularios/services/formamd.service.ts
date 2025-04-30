@@ -16,6 +16,14 @@ export class FormAmdService {
     private infoPagoRepo: Repository<InformacionPago>,
   ) {}
 
+  async hasFicha(idCiudadano: string): Promise<boolean> {
+    const count = await this.formAmdRepo.count({
+      where: {
+        formAmdIdCiudadano: idCiudadano, // Eliminamos la condición del estado
+      },
+    });
+    return count > 0; // True si existe al menos un registro
+  }
   async findAll(): Promise<FormAmd[]> {
     return this.formAmdRepo.find({ relations: ['infoPago'] });
   }
