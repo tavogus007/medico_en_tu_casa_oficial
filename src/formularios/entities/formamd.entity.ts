@@ -124,6 +124,14 @@ export class FormAmd {
   })
   formAmdEmail: string | null;
 
+  @Column({
+    name: 'nombre_paciente',
+    type: 'varchar',
+    length: 150,
+    nullable: true,
+  })
+  formAmdNombrePaciente: string | null;
+
   @ManyToOne(() => InformacionPago, (infoPago) => infoPago.formsAmd)
   @JoinColumn({ name: 'info_pago_id' })
   infoPago?: InformacionPago | null;

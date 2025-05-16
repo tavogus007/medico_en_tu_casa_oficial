@@ -123,4 +123,13 @@ export class CreateFormAmdDto {
   @IsOptional()
   @IsEmail()
   formAmdEmail?: string;
+
+  @ApiProperty({
+    example: 'Juancito Pinto',
+    description: 'Nombre completo del ciudadano',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  formAmdNombrePaciente?: string;
 }
