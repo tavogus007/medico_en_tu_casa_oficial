@@ -69,6 +69,7 @@ export class FormAmdService {
       formAmdIdCiudadano: dto.formAmdIdCiudadano,
       formAmdEmail: dto.formAmdEmail,
       formAmdNombrePaciente: dto.formAmdNombrePaciente,
+      formAmdMedico: dto.formAmdMedico,
     });
 
     return this.formAmdRepo.save(newForm);

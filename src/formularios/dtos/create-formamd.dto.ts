@@ -132,4 +132,13 @@ export class CreateFormAmdDto {
   @IsOptional()
   @IsString()
   formAmdNombrePaciente?: string;
+
+  @ApiProperty({
+    example: 'Dr. Pepito Perez',
+    description: 'Doctor asignado',
+    required: false,
+  })
+  @IsOptional()
+  @IsString()
+  formAmdMedico?: string;
 }
