@@ -23,6 +23,8 @@ export class PacienteService {
     private formAmdRepo: Repository<FormAmd>,
     @InjectRepository(Agenda)
     private agendaRepo: Repository<Agenda>,
+    @InjectRepository(Paciente)
+    private readonly pacienteRepository: Repository<Paciente>,
   ) {}
 
   async findAll(): Promise<Paciente[]> {
@@ -136,5 +138,39 @@ export class PacienteService {
   async delete(id: number): Promise<void> {
     const paciente = await this.findOne(id);
     await this.pacienteRepo.remove(paciente);
+  }
+
+  async findByFormAmdId(formAmdId: number): Promise<Paciente> {
+    const paciente = await this.pacienteRepository.findOne({
+      where: { formAmd: { formAmdId: formAmdId } },
+      relations: ['formAmd'], // Incluir la relación
+    });
+
+    if (!paciente) {
+      throw new NotFoundException(
+        `Paciente con formAmdId ${formAmdId} no encontrado`,
+      );
+    }
+
+    return paciente;
+  }
+
+  async updatePartial(
+    personaId: number,
+    updateDto: Partial<UpdatePacienteDto>,
+  ): Promise<Paciente> {
+    const paciente = await this.pacienteRepository.findOne({
+      where: { personaId },
+    });
+
+    if (!paciente) {
+      throw new NotFoundException(
+        `Paciente con personaId ${personaId} no encontrado`,
+      );
+    }
+
+    // Actualizar solo los campos proporcionados
+    Object.assign(paciente, updateDto);
+    return this.pacienteRepository.save(paciente);
   }
 }
